@@ -8,8 +8,10 @@ import { useState } from 'react';
 import { mockGroups } from '../lib/mocks/groups.mock';
 import GroupCard from '../features/groups/components/GroupCard';
 import CTASection from '../components/layout/CTASection';
+import AuthModal from '../features/auth/components/AuthModal';
 import { usePageTitle } from '../hooks/usePageTitle';
 import { formatCurrency } from '../utils/formatCurrency';
+import { useAuth } from '../context/AuthContext';
 
 // ─── Mock data ────────────────────────────────────────────────────────────────
 
@@ -249,10 +251,16 @@ const FAQ_ITEMS = [
 export default function HowItWorksPage() {
   usePageTitle('Cómo Funciona');
   const [openFaq, setOpenFaq] = useState<number | null>(null);
+  const { user } = useAuth();
 
   function toggleFaq(index: number) {
     setOpenFaq((prev) => (prev === index ? null : index));
   }
+
+  const [authModalOpen, setAuthModalOpen] = useState(false);
+
+  const isSupplier = user?.role === 'supplier';
+  const isBuyer = user?.role === 'buyer';
 
   return (
     <div className="overflow-x-hidden">
@@ -335,18 +343,40 @@ export default function HowItWorksPage() {
       </section>
 
       {/* ── CTA ──────────────────────────────────────────────────────────── */}
-      <CTASection
-        title={
-          <>
-            ¿Listo para hacer tu{' '}
-            <span className="text-brand-teal">primera compra grupal</span>?
-          </>
-        }
-        subtitle="Unite a más de 1.200 retailers que ya acceden a precios mayoristas con MiniMax."
-        primaryLabel="Explorar Grupos"
-        primaryHref="/explorar"
-        secondaryLabel="Ver Proveedores"
-        secondaryHref="/proveedores"
+      {isSupplier ? (
+        <CTASection
+          title={
+            <>
+              ¿Tenés stock para{' '}
+              <span className="text-brand-teal">ofrecer al por mayor</span>?
+            </>
+          }
+          subtitle="Publicá tu grupo de compra y conectá con cientos de retailers que buscan tus productos."
+          primaryLabel="Publicar Grupo"
+          primaryHref="/proveedor/dashboard"
+        />
+      ) : (
+        <CTASection
+          title={
+            <>
+              ¿Listo para hacer tu{' '}
+              <span className="text-brand-teal">primera compra grupal</span>?
+            </>
+          }
+          subtitle="Unite a más de 1.200 retailers que ya acceden a precios mayoristas con MiniMax."
+          primaryLabel="Explorar Grupos"
+          primaryHref="/explorar"
+          {...(!isBuyer && {
+            secondaryLabel: 'Registrarme',
+            onSecondaryClick: () => setAuthModalOpen(true),
+          })}
+        />
+      )}
+
+      <AuthModal
+        isOpen={authModalOpen}
+        onClose={() => setAuthModalOpen(false)}
+        defaultTab="register"
       />
     </div>
   );

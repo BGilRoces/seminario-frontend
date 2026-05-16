@@ -111,14 +111,9 @@ export default function GroupCard({ group }: GroupCardProps) {
             variant="primary"
             size="sm"
             fullWidth
-            disabled={group.status !== 'open'}
             onClick={handleNavigate}
           >
-            {group.status === 'confirmed'
-              ? 'Ver Grupo'
-              : group.status === 'cancelled'
-              ? 'Cancelado'
-              : 'Reservar Cupo'}
+            Ver grupo
           </Button>
         </div>
       </div>

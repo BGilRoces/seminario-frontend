@@ -13,6 +13,7 @@ import { mockGroups } from '../lib/mocks/groups.mock';
 import GroupCard from '../features/groups/components/GroupCard';
 import CTASection from '../components/layout/CTASection';
 import { usePageTitle } from '../hooks/usePageTitle';
+import { useAuth } from '../context/AuthContext';
 
 // ─── Scroll animation hook ────────────────────────────────────────────────────
 
@@ -144,6 +145,13 @@ function TestimonialCard({ quote, name, business, avatarSrc, delay = 0 }: Testim
 export default function HomePage() {
   usePageTitle('Comprá como los grandes');
   const navigate = useNavigate();
+  const { user } = useAuth();
+
+  useEffect(() => {
+    if (user?.role === 'supplier') {
+      navigate('/proveedor/dashboard', { replace: true });
+    }
+  }, [user, navigate]);
 
   return (
     <div className="overflow-x-hidden">

@@ -217,8 +217,22 @@ function CTADesktop({ group, commitment, onJoin, onOpenAuth }: CTAProps) {
   const { user, isAuthenticated } = useAuth();
   const isOpen = group.status === 'open';
 
-  // Suppliers: no CTA
-  if (user?.role === 'supplier') return null;
+  // Suppliers: informational notice, no purchase CTA
+  if (user?.role === 'supplier') {
+    return (
+      <div className="rounded-2xl border border-ink-faint/40 bg-surface p-4 flex flex-col gap-2">
+        <div className="flex items-center gap-2">
+          <svg className="w-4 h-4 text-ink-muted shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+            <path strokeLinecap="round" strokeLinejoin="round" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+          </svg>
+          <span className="font-display font-semibold text-sm text-ink">Modo proveedor</span>
+        </div>
+        <p className="font-body text-xs text-ink-muted leading-relaxed">
+          Estás viendo este grupo como proveedor. Solo los compradores pueden unirse a grupos de compra.
+        </p>
+      </div>
+    );
+  }
 
   // Guest: auth prompt
   if (!isAuthenticated) {

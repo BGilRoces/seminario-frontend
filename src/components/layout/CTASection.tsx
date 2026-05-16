@@ -13,6 +13,7 @@ interface CTASectionProps {
   primaryHref: string;
   secondaryLabel?: string;
   secondaryHref?: string;
+  onSecondaryClick?: () => void;
 }
 
 export default function CTASection({
@@ -22,6 +23,7 @@ export default function CTASection({
   primaryHref,
   secondaryLabel,
   secondaryHref,
+  onSecondaryClick,
 }: CTASectionProps) {
   const navigate = useNavigate();
 
@@ -42,8 +44,12 @@ export default function CTASection({
           <Button variant="primary" size="lg" onClick={() => navigate(primaryHref)}>
             {primaryLabel}
           </Button>
-          {secondaryLabel && secondaryHref && (
-            <Button variant="ghost" size="lg" onClick={() => navigate(secondaryHref)}>
+          {secondaryLabel && (secondaryHref || onSecondaryClick) && (
+            <Button
+              variant="ghost"
+              size="lg"
+              onClick={onSecondaryClick ?? (() => navigate(secondaryHref!))}
+            >
               {secondaryLabel}
             </Button>
           )}
